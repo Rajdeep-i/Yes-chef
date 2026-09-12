@@ -125,6 +125,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5397004332ec8fe4c9777aa8f311161c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
-  ingredientType: 1
+  ingredientType: 0
   preparedMaterial: {fileID: 2100000, guid: 52920a67e8d9b844da76243bb05822a8, type: 2}
   cookedMaterial: {fileID: 2100000, guid: 77a737d5d8793ef468acc703575052df, type: 2}

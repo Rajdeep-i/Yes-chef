@@ -9,47 +9,97 @@ public class PreparationTable : MonoBehaviour, IInteractable
     private Ingredient currentIngredient;
     private bool isPreparing;
 
+    private float remainingPreparationTime;
+
+    public bool IsPreparing => isPreparing;
+
+    public float RemainingPreparationTime =>
+        remainingPreparationTime;
+
     public void Interact()
     {
         if (isPreparing)
         {
-            Debug.Log("Ingredient is already being prepared.");
+            Debug.Log(
+                "Vegetable is already being prepared."
+            );
+
             return;
         }
 
-        PlayerItemHolder itemHolder = FindFirstObjectByType<PlayerItemHolder>();
+        PlayerItemHolder itemHolder =
+            FindFirstObjectByType<PlayerItemHolder>();
 
         if (itemHolder == null)
         {
-            Debug.LogWarning("PlayerItemHolder not found.");
+            Debug.LogWarning(
+                "PlayerItemHolder not found."
+            );
+
             return;
         }
 
-        // PLAYER IS HOLDING SOMETHING
+        // PLAYER IS HOLDING AN ITEM
         if (itemHolder.IsHoldingItem)
         {
-            GameObject ingredientObject = itemHolder.GetHeldItem();
+            // Table can only hold one ingredient
+            if (currentIngredient != null)
+            {
+                Debug.Log(
+                    "Preparation Table is already occupied."
+                );
 
-            Ingredient ingredient = ingredientObject.GetComponent<Ingredient>();
+                return;
+            }
+
+            GameObject ingredientObject =
+                itemHolder.GetHeldItem();
+
+            Ingredient ingredient =
+                ingredientObject.GetComponent<Ingredient>();
 
             if (ingredient == null)
             {
-                Debug.LogWarning("Held object is not an Ingredient.");
+                Debug.LogWarning(
+                    "Held object is not an Ingredient."
+                );
+
+                return;
+            }
+
+            // Only vegetables can be prepared
+            if (ingredient.Type !=
+                IngredientType.Vegetable)
+            {
+                Debug.Log(
+                    ingredient.Type +
+                    " cannot be prepared on the Table."
+                );
+
                 return;
             }
 
             if (ingredient.IsPrepared)
             {
-                Debug.Log("This ingredient is already prepared.");
+                Debug.Log(
+                    "This vegetable is already prepared."
+                );
+
                 return;
             }
 
-            // Place raw ingredient on table
-            ingredientObject.transform.SetParent(prepPoint);
-            ingredientObject.transform.localPosition = Vector3.zero;
-            ingredientObject.transform.localRotation = Quaternion.identity;
+            ingredientObject.transform.SetParent(
+                prepPoint
+            );
 
-            Collider ingredientCollider = ingredientObject.GetComponent<Collider>();
+            ingredientObject.transform.localPosition =
+                Vector3.zero;
+
+            ingredientObject.transform.localRotation =
+                Quaternion.identity;
+
+            Collider ingredientCollider =
+                ingredientObject.GetComponent<Collider>();
 
             if (ingredientCollider != null)
             {
@@ -60,56 +110,93 @@ public class PreparationTable : MonoBehaviour, IInteractable
 
             currentIngredient = ingredient;
 
-            Debug.Log("Ingredient placed on the Preparation Table.");
+            Debug.Log(
+                "Vegetable placed on the Preparation Table."
+            );
 
             return;
         }
 
         // PLAYER IS NOT HOLDING ANYTHING
+
         if (currentIngredient == null)
         {
-            Debug.Log("There is no ingredient on the Preparation Table.");
+            Debug.Log(
+                "There is no vegetable on the Preparation Table."
+            );
+
             return;
         }
 
-        // INGREDIENT IS ALREADY PREPARED → PICK IT UP
+        // PICK UP PREPARED VEGETABLE
         if (currentIngredient.IsPrepared)
         {
-            GameObject ingredientObject = currentIngredient.gameObject;
+            GameObject ingredientObject =
+                currentIngredient.gameObject;
 
-            ingredientObject.transform.SetParent(null);
+            ingredientObject.transform.SetParent(
+                null
+            );
 
-            Collider ingredientCollider = ingredientObject.GetComponent<Collider>();
+            Collider ingredientCollider =
+                ingredientObject.GetComponent<Collider>();
 
             if (ingredientCollider != null)
             {
                 ingredientCollider.enabled = false;
             }
 
-            itemHolder.HoldItem(ingredientObject);
+            itemHolder.HoldItem(
+                ingredientObject
+            );
 
             currentIngredient = null;
 
-            Debug.Log("Prepared ingredient picked up from the Preparation Table.");
+            Debug.Log(
+                "Prepared vegetable picked up from the Preparation Table."
+            );
 
             return;
         }
 
-        // INGREDIENT IS RAW → START PREPARATION
-        StartCoroutine(PrepareIngredient());
+        // START PREPARATION
+        StartCoroutine(
+            PrepareIngredient()
+        );
     }
 
     private IEnumerator PrepareIngredient()
     {
         isPreparing = true;
 
-        Debug.Log("Preparing " + currentIngredient.Type + "...");
+        remainingPreparationTime =
+            preparationTime;
 
-        yield return new WaitForSeconds(preparationTime);
+        Debug.Log(
+            "Preparing " +
+            currentIngredient.Type +
+            "..."
+        );
 
-        currentIngredient.Prepare();
+        while (remainingPreparationTime > 0f)
+        {
+            remainingPreparationTime -=
+                Time.deltaTime;
 
-        Debug.Log(currentIngredient.Type + " preparation complete!");
+            yield return null;
+        }
+
+        remainingPreparationTime = 0f;
+
+        if (currentIngredient != null)
+        {
+            currentIngredient.Prepare();
+
+            Debug.Log(
+                currentIngredient.Type +
+                " preparation complete!"
+            );
+        }
 
         isPreparing = false;
     }

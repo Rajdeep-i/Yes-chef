@@ -6,12 +6,13 @@ public class PlayerMovement : MonoBehaviour
 
     private CharacterController characterController;
     private PlayerInputActions inputActions;
+    private GameManager gameManager;
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
-
         inputActions = new PlayerInputActions();
+        gameManager = FindFirstObjectByType<GameManager>();
     }
 
     private void OnEnable()
@@ -26,11 +27,20 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        
-        Vector2 input = inputActions.Player.Move.ReadValue<Vector2>();
+        if (gameManager != null &&
+            !gameManager.GameRunning)
+        {
+            return;
+        }
 
-        Vector3 movement = new Vector3(input.x, 0f, input.y);
+        Vector2 input =
+            inputActions.Player.Move.ReadValue<Vector2>();
 
-        characterController.Move(movement * moveSpeed * Time.deltaTime);
+        Vector3 movement =
+            new Vector3(input.x, 0f, input.y);
+
+        characterController.Move(
+            movement * moveSpeed * Time.deltaTime
+        );
     }
 }

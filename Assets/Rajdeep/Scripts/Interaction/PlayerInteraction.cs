@@ -1,5 +1,4 @@
 using UnityEngine;
-using TMPro;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -8,10 +7,12 @@ public class PlayerInteraction : MonoBehaviour
 
     private IInteractable currentInteractable;
     private PlayerInputActions inputActions;
+    private GameManager gameManager;
 
     private void Awake()
     {
         inputActions = new PlayerInputActions();
+        gameManager = FindFirstObjectByType<GameManager>();
 
         if (interactionPrompt != null)
         {
@@ -31,6 +32,19 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
+        if (gameManager != null &&
+            !gameManager.GameRunning)
+        {
+            currentInteractable = null;
+
+            if (interactionPrompt != null)
+            {
+                interactionPrompt.SetActive(false);
+            }
+
+            return;
+        }
+
         DetectInteractable();
 
         if (currentInteractable != null &&
@@ -63,7 +77,9 @@ public class PlayerInteraction : MonoBehaviour
 
         if (interactionPrompt != null)
         {
-            interactionPrompt.SetActive(currentInteractable != null);
+            interactionPrompt.SetActive(
+                currentInteractable != null
+            );
         }
     }
 

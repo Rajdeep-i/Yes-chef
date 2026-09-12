@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7442990787928956130}
   - component: {fileID: 847033882745860737}
   m_Layer: 0
-  m_Name: RawBread
+  m_Name: Cheese
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -125,6 +125,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5397004332ec8fe4c9777aa8f311161c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ingredient
-  ingredientType: 3
+  ingredientType: 1
   preparedMaterial: {fileID: 2100000, guid: a38b989dd7471f846917ee0183d8b5eb, type: 2}
   cookedMaterial: {fileID: 2100000, guid: e22ca14ca910dba468f69ccc87dea02a, type: 2}

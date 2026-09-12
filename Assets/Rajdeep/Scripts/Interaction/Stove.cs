@@ -3,121 +3,306 @@ using UnityEngine;
 
 public class Stove : MonoBehaviour, IInteractable
 {
-    [SerializeField] private Transform stovePoint;
+    [SerializeField] private Transform stovePoint1;
+    [SerializeField] private Transform stovePoint2;
+
     [SerializeField] private float cookingTime = 6f;
 
-    private Ingredient currentIngredient;
-    private bool isCooking;
+    private Ingredient ingredient1;
+    private Ingredient ingredient2;
+
+    private float remainingCookingTime1;
+    private float remainingCookingTime2;
+
+    public bool IsCooking1 =>
+        ingredient1 != null &&
+        !ingredient1.IsCooked;
+
+    public bool IsCooking2 =>
+        ingredient2 != null &&
+        !ingredient2.IsCooked;
+
+    public float RemainingCookingTime1 =>
+        remainingCookingTime1;
+
+    public float RemainingCookingTime2 =>
+        remainingCookingTime2;
 
     public void Interact()
     {
-        if (isCooking)
-        {
-            Debug.Log("Ingredient is currently cooking.");
-            return;
-        }
-
-        PlayerItemHolder itemHolder = FindFirstObjectByType<PlayerItemHolder>();
+        PlayerItemHolder itemHolder =
+            FindFirstObjectByType<PlayerItemHolder>();
 
         if (itemHolder == null)
         {
-            Debug.LogWarning("PlayerItemHolder not found.");
+            Debug.LogWarning(
+                "PlayerItemHolder not found."
+            );
+
             return;
         }
 
         // PLAYER IS HOLDING AN ITEM
         if (itemHolder.IsHoldingItem)
         {
-            GameObject ingredientObject = itemHolder.GetHeldItem();
+            GameObject ingredientObject =
+                itemHolder.GetHeldItem();
 
-            Ingredient ingredient = ingredientObject.GetComponent<Ingredient>();
+            Ingredient ingredient =
+                ingredientObject.GetComponent<Ingredient>();
 
             if (ingredient == null)
             {
-                Debug.LogWarning("Held object is not an Ingredient.");
+                Debug.LogWarning(
+                    "Held object is not an Ingredient."
+                );
+
                 return;
             }
 
-            if (!ingredient.IsPrepared)
+            // Only Meat can be cooked
+            if (ingredient.Type != IngredientType.Meat)
             {
-                Debug.Log("Ingredient must be prepared before cooking.");
+                Debug.Log(
+                    ingredient.Type +
+                    " cannot be cooked on the Stove."
+                );
+
                 return;
             }
 
+            // Already cooked meat does not need to go
+            // back onto the stove
             if (ingredient.IsCooked)
             {
-                Debug.Log("Ingredient is already cooked.");
+                Debug.Log(
+                    "This meat is already cooked."
+                );
+
                 return;
             }
 
-            // Place ingredient on stove
-            ingredientObject.transform.SetParent(stovePoint);
-            ingredientObject.transform.localPosition = Vector3.zero;
-            ingredientObject.transform.localRotation = Quaternion.identity;
-
-            Collider ingredientCollider = ingredientObject.GetComponent<Collider>();
-
-            if (ingredientCollider != null)
+            // Try Slot 1
+            if (ingredient1 == null)
             {
-                ingredientCollider.enabled = true;
+                PlaceIngredientInSlot(
+                    ingredientObject,
+                    ingredient,
+                    stovePoint1,
+                    1
+                );
+
+                return;
             }
 
-            itemHolder.ClearHeldItem();
+            // Try Slot 2
+            if (ingredient2 == null)
+            {
+                PlaceIngredientInSlot(
+                    ingredientObject,
+                    ingredient,
+                    stovePoint2,
+                    2
+                );
 
-            currentIngredient = ingredient;
+                return;
+            }
 
-            Debug.Log("Prepared ingredient placed on the Stove.");
+            // Both slots are occupied
+            Debug.Log(
+                "Both Stove slots are occupied."
+            );
 
             return;
         }
 
         // PLAYER IS NOT HOLDING ANYTHING
 
-        if (currentIngredient == null)
+        // Pick up cooked meat from Slot 1
+        if (ingredient1 != null &&
+            ingredient1.IsCooked)
         {
-            Debug.Log("There is no ingredient on the Stove.");
-            return;
-        }
-
-        // COOKED INGREDIENT → PICK IT UP
-        if (currentIngredient.IsCooked)
-        {
-            GameObject ingredientObject = currentIngredient.gameObject;
-
-            ingredientObject.transform.SetParent(null);
-
-            Collider ingredientCollider = ingredientObject.GetComponent<Collider>();
-
-            if (ingredientCollider != null)
-            {
-                ingredientCollider.enabled = false;
-            }
-
-            itemHolder.HoldItem(ingredientObject);
-
-            currentIngredient = null;
-
-            Debug.Log("Cooked ingredient picked up from the Stove.");
+            PickUpIngredient(
+                ingredient1,
+                1,
+                itemHolder
+            );
 
             return;
         }
 
-        // PREPARED INGREDIENT → START COOKING
-        StartCoroutine(CookIngredient());
+        // Pick up cooked meat from Slot 2
+        if (ingredient2 != null &&
+            ingredient2.IsCooked)
+        {
+            PickUpIngredient(
+                ingredient2,
+                2,
+                itemHolder
+            );
+
+            return;
+        }
+
+        Debug.Log(
+            "No cooked meat is ready on the Stove."
+        );
     }
 
-    private IEnumerator CookIngredient()
+    private void PlaceIngredientInSlot(
+        GameObject ingredientObject,
+        Ingredient ingredient,
+        Transform stovePoint,
+        int slot
+    )
     {
-        isCooking = true;
+        ingredientObject.transform.SetParent(
+            stovePoint
+        );
 
-        Debug.Log("Cooking " + currentIngredient.Type + "...");
+        ingredientObject.transform.localPosition =
+            Vector3.zero;
 
-        yield return new WaitForSeconds(cookingTime);
+        ingredientObject.transform.localRotation =
+            Quaternion.identity;
 
-        currentIngredient.Cook();
+        Collider ingredientCollider =
+            ingredientObject.GetComponent<Collider>();
 
-        Debug.Log(currentIngredient.Type + " cooking complete!");
+        if (ingredientCollider != null)
+        {
+            ingredientCollider.enabled = true;
+        }
 
-        isCooking = false;
+        PlayerItemHolder itemHolder =
+            FindFirstObjectByType<PlayerItemHolder>();
+
+        if (itemHolder != null)
+        {
+            itemHolder.ClearHeldItem();
+        }
+
+        if (slot == 1)
+        {
+            ingredient1 = ingredient;
+            remainingCookingTime1 = cookingTime;
+
+            StartCoroutine(
+                CookIngredient(
+                    ingredient,
+                    1
+                )
+            );
+        }
+        else
+        {
+            ingredient2 = ingredient;
+            remainingCookingTime2 = cookingTime;
+
+            StartCoroutine(
+                CookIngredient(
+                    ingredient,
+                    2
+                )
+            );
+        }
+
+        Debug.Log(
+            "Meat placed in Stove Slot " +
+            slot +
+            ". Cooking for " +
+            cookingTime +
+            " seconds."
+        );
+    }
+
+    private IEnumerator CookIngredient(
+        Ingredient ingredient,
+        int slot
+    )
+    {
+        while (true)
+        {
+            if (slot == 1)
+            {
+                remainingCookingTime1 -=
+                    Time.deltaTime;
+
+                if (remainingCookingTime1 <= 0f)
+                {
+                    remainingCookingTime1 = 0f;
+                    break;
+                }
+            }
+            else
+            {
+                remainingCookingTime2 -=
+                    Time.deltaTime;
+
+                if (remainingCookingTime2 <= 0f)
+                {
+                    remainingCookingTime2 = 0f;
+                    break;
+                }
+            }
+
+            yield return null;
+        }
+
+        if (ingredient == null)
+        {
+            yield break;
+        }
+
+        ingredient.Cook();
+
+        Debug.Log(
+            "Stove Slot " +
+            slot +
+            " cooking complete!"
+        );
+    }
+
+    private void PickUpIngredient(
+        Ingredient ingredient,
+        int slot,
+        PlayerItemHolder itemHolder
+    )
+    {
+        GameObject ingredientObject =
+            ingredient.gameObject;
+
+        ingredientObject.transform.SetParent(
+            null
+        );
+
+        Collider ingredientCollider =
+            ingredientObject.GetComponent<Collider>();
+
+        if (ingredientCollider != null)
+        {
+            ingredientCollider.enabled = false;
+        }
+
+        itemHolder.HoldItem(
+            ingredientObject
+        );
+
+        if (slot == 1)
+        {
+            ingredient1 = null;
+            remainingCookingTime1 = 0f;
+        }
+        else
+        {
+            ingredient2 = null;
+            remainingCookingTime2 = 0f;
+        }
+
+        Debug.Log(
+            "Cooked meat picked up from Stove Slot " +
+            slot +
+            "."
+        );
     }
 }

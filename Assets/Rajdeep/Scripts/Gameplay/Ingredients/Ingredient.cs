@@ -15,35 +15,63 @@ public class Ingredient : MonoBehaviour
 
     public void Prepare()
     {
-        isPrepared = true;
-
-        Renderer ingredientRenderer = GetComponent<Renderer>();
-
-        if (ingredientRenderer != null && preparedMaterial != null)
+        // Only vegetables can be prepared
+        if (ingredientType != IngredientType.Vegetable)
         {
-            ingredientRenderer.material = preparedMaterial;
+            Debug.LogWarning(
+                ingredientType +
+                " does not need to be prepared."
+            );
+
+            return;
         }
 
-        Debug.Log(ingredientType + " has been prepared!");
+        isPrepared = true;
+
+        Renderer ingredientRenderer =
+            GetComponent<Renderer>();
+
+        if (ingredientRenderer != null &&
+            preparedMaterial != null)
+        {
+            ingredientRenderer.material =
+                preparedMaterial;
+        }
+
+        Debug.Log(
+            ingredientType +
+            " has been prepared!"
+        );
     }
 
     public void Cook()
     {
-        if (!isPrepared)
+        // Only meat can be cooked
+        if (ingredientType != IngredientType.Meat)
         {
-            Debug.LogWarning("Ingredient must be prepared before cooking.");
+            Debug.LogWarning(
+                ingredientType +
+                " cannot be cooked."
+            );
+
             return;
         }
 
         isCooked = true;
 
-        Renderer ingredientRenderer = GetComponent<Renderer>();
+        Renderer ingredientRenderer =
+            GetComponent<Renderer>();
 
-        if (ingredientRenderer != null && cookedMaterial != null)
+        if (ingredientRenderer != null &&
+            cookedMaterial != null)
         {
-            ingredientRenderer.material = cookedMaterial;
+            ingredientRenderer.material =
+                cookedMaterial;
         }
 
-        Debug.Log(ingredientType + " has been cooked!");
+        Debug.Log(
+            ingredientType +
+            " has been cooked!"
+        );
     }
 }
