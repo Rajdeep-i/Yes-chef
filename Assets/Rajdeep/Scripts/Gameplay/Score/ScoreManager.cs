@@ -8,8 +8,12 @@ public class ScoreManager : MonoBehaviour
     private int currentScore;
     private int highScore;
 
+    private bool isNewHighScore;
+
     public int CurrentScore => currentScore;
     public int HighScore => highScore;
+
+    public bool IsNewHighScore => isNewHighScore;
 
     private void Awake()
     {
@@ -81,15 +85,6 @@ public class ScoreManager : MonoBehaviour
         currentScore += orderScore;
 
         CheckForNewHighScore();
-
-        Debug.Log(
-            "Order Score: " +
-            orderScore +
-            " | Total Score: " +
-            currentScore +
-            " | High Score: " +
-            highScore
-        );
     }
 
     private void CheckForNewHighScore()
@@ -98,17 +93,14 @@ public class ScoreManager : MonoBehaviour
         {
             highScore = currentScore;
 
+            isNewHighScore = true;
+
             PlayerPrefs.SetInt(
                 HighScoreKey,
                 highScore
             );
 
             PlayerPrefs.Save();
-
-            Debug.Log(
-                "NEW HIGH SCORE! " +
-                highScore
-            );
         }
     }
 
@@ -116,8 +108,6 @@ public class ScoreManager : MonoBehaviour
     {
         currentScore = 0;
 
-        Debug.Log(
-            "Current score reset."
-        );
+        isNewHighScore = false;
     }
 }

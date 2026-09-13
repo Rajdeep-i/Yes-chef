@@ -70,10 +70,5 @@ public class OrderManager : MonoBehaviour
         newOrder.activationTime = Time.time;
 
         window.SetOrder(newOrder);
-
-        Debug.Log(
-            window.gameObject.name +
-            " received a new order."
-        );
     }
 }

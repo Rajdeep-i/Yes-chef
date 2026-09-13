@@ -20,10 +20,6 @@ public class PreparationTable : MonoBehaviour, IInteractable
     {
         if (isPreparing)
         {
-            Debug.Log(
-                "Vegetable is already being prepared."
-            );
-
             return;
         }
 
@@ -32,10 +28,6 @@ public class PreparationTable : MonoBehaviour, IInteractable
 
         if (itemHolder == null)
         {
-            Debug.LogWarning(
-                "PlayerItemHolder not found."
-            );
-
             return;
         }
 
@@ -45,10 +37,6 @@ public class PreparationTable : MonoBehaviour, IInteractable
             // Table can only hold one ingredient
             if (currentIngredient != null)
             {
-                Debug.Log(
-                    "Preparation Table is already occupied."
-                );
-
                 return;
             }
 
@@ -60,10 +48,6 @@ public class PreparationTable : MonoBehaviour, IInteractable
 
             if (ingredient == null)
             {
-                Debug.LogWarning(
-                    "Held object is not an Ingredient."
-                );
-
                 return;
             }
 
@@ -71,20 +55,11 @@ public class PreparationTable : MonoBehaviour, IInteractable
             if (ingredient.Type !=
                 IngredientType.Vegetable)
             {
-                Debug.Log(
-                    ingredient.Type +
-                    " cannot be prepared on the Table."
-                );
-
                 return;
             }
 
             if (ingredient.IsPrepared)
             {
-                Debug.Log(
-                    "This vegetable is already prepared."
-                );
-
                 return;
             }
 
@@ -110,10 +85,6 @@ public class PreparationTable : MonoBehaviour, IInteractable
 
             currentIngredient = ingredient;
 
-            Debug.Log(
-                "Vegetable placed on the Preparation Table."
-            );
-
             return;
         }
 
@@ -121,10 +92,6 @@ public class PreparationTable : MonoBehaviour, IInteractable
 
         if (currentIngredient == null)
         {
-            Debug.Log(
-                "There is no vegetable on the Preparation Table."
-            );
-
             return;
         }
 
@@ -152,10 +119,6 @@ public class PreparationTable : MonoBehaviour, IInteractable
 
             currentIngredient = null;
 
-            Debug.Log(
-                "Prepared vegetable picked up from the Preparation Table."
-            );
-
             return;
         }
 
@@ -172,12 +135,6 @@ public class PreparationTable : MonoBehaviour, IInteractable
         remainingPreparationTime =
             preparationTime;
 
-        Debug.Log(
-            "Preparing " +
-            currentIngredient.Type +
-            "..."
-        );
-
         while (remainingPreparationTime > 0f)
         {
             remainingPreparationTime -=
@@ -191,11 +148,6 @@ public class PreparationTable : MonoBehaviour, IInteractable
         if (currentIngredient != null)
         {
             currentIngredient.Prepare();
-
-            Debug.Log(
-                currentIngredient.Type +
-                " preparation complete!"
-            );
         }
 
         isPreparing = false;

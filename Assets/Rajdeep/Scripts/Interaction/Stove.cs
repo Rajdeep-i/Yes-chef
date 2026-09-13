@@ -35,10 +35,6 @@ public class Stove : MonoBehaviour, IInteractable
 
         if (itemHolder == null)
         {
-            Debug.LogWarning(
-                "PlayerItemHolder not found."
-            );
-
             return;
         }
 
@@ -53,21 +49,12 @@ public class Stove : MonoBehaviour, IInteractable
 
             if (ingredient == null)
             {
-                Debug.LogWarning(
-                    "Held object is not an Ingredient."
-                );
-
                 return;
             }
 
             // Only Meat can be cooked
             if (ingredient.Type != IngredientType.Meat)
             {
-                Debug.Log(
-                    ingredient.Type +
-                    " cannot be cooked on the Stove."
-                );
-
                 return;
             }
 
@@ -75,10 +62,6 @@ public class Stove : MonoBehaviour, IInteractable
             // back onto the stove
             if (ingredient.IsCooked)
             {
-                Debug.Log(
-                    "This meat is already cooked."
-                );
-
                 return;
             }
 
@@ -109,10 +92,6 @@ public class Stove : MonoBehaviour, IInteractable
             }
 
             // Both slots are occupied
-            Debug.Log(
-                "Both Stove slots are occupied."
-            );
-
             return;
         }
 
@@ -143,10 +122,6 @@ public class Stove : MonoBehaviour, IInteractable
 
             return;
         }
-
-        Debug.Log(
-            "No cooked meat is ready on the Stove."
-        );
     }
 
     private void PlaceIngredientInSlot(
@@ -206,14 +181,6 @@ public class Stove : MonoBehaviour, IInteractable
                 )
             );
         }
-
-        Debug.Log(
-            "Meat placed in Stove Slot " +
-            slot +
-            ". Cooking for " +
-            cookingTime +
-            " seconds."
-        );
     }
 
     private IEnumerator CookIngredient(
@@ -255,12 +222,6 @@ public class Stove : MonoBehaviour, IInteractable
         }
 
         ingredient.Cook();
-
-        Debug.Log(
-            "Stove Slot " +
-            slot +
-            " cooking complete!"
-        );
     }
 
     private void PickUpIngredient(
@@ -298,11 +259,5 @@ public class Stove : MonoBehaviour, IInteractable
             ingredient2 = null;
             remainingCookingTime2 = 0f;
         }
-
-        Debug.Log(
-            "Cooked meat picked up from Stove Slot " +
-            slot +
-            "."
-        );
     }
 }

@@ -27,20 +27,12 @@ public class OrderUI : MonoBehaviour
         if (customerWindows == null ||
             customerWindows.Length == 0)
         {
-            Debug.LogWarning(
-                "Customer Windows are not assigned to OrderUI."
-            );
-
             return;
         }
 
         if (orderTexts == null ||
             orderTexts.Length == 0)
         {
-            Debug.LogWarning(
-                "Order Texts are not assigned to OrderUI."
-            );
-
             return;
         }
 

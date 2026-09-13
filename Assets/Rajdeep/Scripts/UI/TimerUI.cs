@@ -14,7 +14,6 @@ public class TimerUI : MonoBehaviour
 
         if (gameManager == null)
         {
-            Debug.LogWarning("GameManager not found.");
             return;
         }
 

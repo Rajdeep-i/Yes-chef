@@ -16,10 +16,6 @@ public class StoveUI : MonoBehaviour
 
         if (stove == null)
         {
-            Debug.LogWarning(
-                "Stove not found."
-            );
-
             return;
         }
 

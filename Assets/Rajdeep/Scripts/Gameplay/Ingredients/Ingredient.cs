@@ -18,11 +18,6 @@ public class Ingredient : MonoBehaviour
         // Only vegetables can be prepared
         if (ingredientType != IngredientType.Vegetable)
         {
-            Debug.LogWarning(
-                ingredientType +
-                " does not need to be prepared."
-            );
-
             return;
         }
 
@@ -37,11 +32,6 @@ public class Ingredient : MonoBehaviour
             ingredientRenderer.material =
                 preparedMaterial;
         }
-
-        Debug.Log(
-            ingredientType +
-            " has been prepared!"
-        );
     }
 
     public void Cook()
@@ -49,11 +39,6 @@ public class Ingredient : MonoBehaviour
         // Only meat can be cooked
         if (ingredientType != IngredientType.Meat)
         {
-            Debug.LogWarning(
-                ingredientType +
-                " cannot be cooked."
-            );
-
             return;
         }
 
@@ -68,10 +53,5 @@ public class Ingredient : MonoBehaviour
             ingredientRenderer.material =
                 cookedMaterial;
         }
-
-        Debug.Log(
-            ingredientType +
-            " has been cooked!"
-        );
     }
 }

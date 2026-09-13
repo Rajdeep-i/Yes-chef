@@ -12,7 +12,6 @@ public class PlayerItemHolder : MonoBehaviour
     {
         if (heldItem != null)
         {
-            Debug.Log("Player is already holding an item.");
             return;
         }
 
@@ -28,8 +27,6 @@ public class PlayerItemHolder : MonoBehaviour
         {
             itemCollider.enabled = false;
         }
-
-        Debug.Log("Player picked up: " + heldItem.name);
     }
 
     public GameObject GetHeldItem()

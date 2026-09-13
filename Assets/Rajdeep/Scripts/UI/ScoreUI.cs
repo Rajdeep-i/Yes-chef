@@ -14,10 +14,6 @@ public class ScoreUI : MonoBehaviour
 
         if (scoreManager == null)
         {
-            Debug.LogWarning(
-                "ScoreManager not found."
-            );
-
             return;
         }
 

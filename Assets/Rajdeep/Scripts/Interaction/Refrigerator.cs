@@ -13,23 +13,17 @@ public class Refrigerator : MonoBehaviour, IInteractable
 
         if (itemHolder == null)
         {
-            Debug.LogWarning("PlayerItemHolder not found.");
             return;
         }
 
         if (itemHolder.IsHoldingItem)
         {
-            Debug.Log("Player is already holding an ingredient.");
             return;
         }
 
         if (ingredientPrefabs == null ||
             ingredientPrefabs.Length == 0)
         {
-            Debug.LogWarning(
-                "No ingredient prefabs assigned to the Refrigerator."
-            );
-
             return;
         }
 
@@ -43,15 +37,6 @@ public class Refrigerator : MonoBehaviour, IInteractable
 
         Ingredient ingredientComponent =
             ingredient.GetComponent<Ingredient>();
-
-        if (ingredientComponent != null)
-        {
-            Debug.Log(
-                "Player got " +
-                ingredientComponent.Type +
-                " from the Refrigerator."
-            );
-        }
 
         // Move to the next ingredient
         currentIngredientIndex++;

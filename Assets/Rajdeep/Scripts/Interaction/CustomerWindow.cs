@@ -27,21 +27,6 @@ public class CustomerWindow : MonoBehaviour, IInteractable
                 order.requiredIngredients
             );
 
-        Debug.Log(
-            gameObject.name +
-            " received a new order with " +
-            remainingIngredients.Count +
-            " ingredients."
-        );
-
-        Debug.Log(
-            "Order: " +
-            string.Join(
-                ", ",
-                remainingIngredients
-            )
-        );
-
         RefreshOrderUI();
     }
 
@@ -59,10 +44,6 @@ public class CustomerWindow : MonoBehaviour, IInteractable
     {
         if (currentOrder == null)
         {
-            Debug.Log(
-                "This customer window has no order."
-            );
-
             return;
         }
 
@@ -71,10 +52,6 @@ public class CustomerWindow : MonoBehaviour, IInteractable
 
         if (itemHolder == null)
         {
-            Debug.LogWarning(
-                "PlayerItemHolder not found."
-            );
-
             return;
         }
 
@@ -83,10 +60,6 @@ public class CustomerWindow : MonoBehaviour, IInteractable
 
         if (scoreManager == null)
         {
-            Debug.LogWarning(
-                "ScoreManager not found."
-            );
-
             return;
         }
 
@@ -95,19 +68,11 @@ public class CustomerWindow : MonoBehaviour, IInteractable
 
         if (orderManager == null)
         {
-            Debug.LogWarning(
-                "OrderManager not found."
-            );
-
             return;
         }
 
         if (!itemHolder.IsHoldingItem)
         {
-            Debug.Log(
-                "Player is not holding an ingredient."
-            );
-
             return;
         }
 
@@ -119,10 +84,6 @@ public class CustomerWindow : MonoBehaviour, IInteractable
 
         if (ingredient == null)
         {
-            Debug.LogWarning(
-                "Held object is not an Ingredient."
-            );
-
             return;
         }
 
@@ -131,10 +92,6 @@ public class CustomerWindow : MonoBehaviour, IInteractable
             IngredientType.Vegetable &&
             !ingredient.IsPrepared)
         {
-            Debug.Log(
-                "Vegetable must be chopped before serving."
-            );
-
             return;
         }
 
@@ -143,10 +100,6 @@ public class CustomerWindow : MonoBehaviour, IInteractable
             IngredientType.Meat &&
             !ingredient.IsCooked)
         {
-            Debug.Log(
-                "Meat must be cooked before serving."
-            );
-
             return;
         }
 
@@ -163,12 +116,6 @@ public class CustomerWindow : MonoBehaviour, IInteractable
         // Ingredient is not required
         if (ingredientIndex == -1)
         {
-            Debug.Log(
-                "Wrong ingredient! " +
-                deliveredType +
-                " is not required by this order."
-            );
-
             return;
         }
 
@@ -181,11 +128,6 @@ public class CustomerWindow : MonoBehaviour, IInteractable
         itemHolder.ClearHeldItem();
 
         Destroy(heldObject);
-
-        Debug.Log(
-            "Correct ingredient delivered: " +
-            deliveredType
-        );
 
         // Check if entire order is completed
         if (remainingIngredients.Count == 0)
@@ -212,22 +154,6 @@ public class CustomerWindow : MonoBehaviour, IInteractable
             // Show score popup
             ShowScorePopup(orderScore);
 
-            Debug.Log(
-                gameObject.name +
-                " order completed!"
-            );
-
-            Debug.Log(
-                "Order took " +
-                elapsedTime.ToString("F2") +
-                " seconds."
-            );
-
-            Debug.Log(
-                "Final Order Score: " +
-                orderScore
-            );
-
             // Wait 5 seconds before new order
             StartCoroutine(
                 GenerateNextOrderAfterDelay()
@@ -235,14 +161,6 @@ public class CustomerWindow : MonoBehaviour, IInteractable
         }
         else
         {
-            Debug.Log(
-                "Remaining ingredients: " +
-                string.Join(
-                    ", ",
-                    remainingIngredients
-                )
-            );
-
             RefreshOrderUI();
         }
     }
@@ -251,21 +169,11 @@ public class CustomerWindow : MonoBehaviour, IInteractable
     {
         if (scorePopup == null)
         {
-            Debug.LogWarning(
-                "Score Popup is not assigned for " +
-                gameObject.name
-            );
-
             return;
         }
 
         if (scorePopupPosition == null)
         {
-            Debug.LogWarning(
-                "Score Popup Position is not assigned for " +
-                gameObject.name
-            );
-
             return;
         }
 
@@ -278,12 +186,6 @@ public class CustomerWindow : MonoBehaviour, IInteractable
     private IEnumerator GenerateNextOrderAfterDelay()
     {
         RefreshOrderUI();
-
-        Debug.Log(
-            "New order will appear in " +
-            newOrderDelay +
-            " seconds."
-        );
 
         yield return new WaitForSeconds(
             newOrderDelay
